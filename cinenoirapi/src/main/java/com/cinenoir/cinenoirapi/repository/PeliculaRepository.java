@@ -93,4 +93,29 @@ public class PeliculaRepository {
         String sql = "DELETE FROM peliculas WHERE id = ?";
         return jdbc.update(sql, id);
     }
+
+    // Bloquear una pelicula mientras se valida su eliminacion
+    public boolean bloquearPorId(int id) {
+        String sql = """
+            SELECT id FROM peliculas
+            WHERE id = ?
+            FOR UPDATE
+            """;
+
+        return !jdbc.queryForList(sql, Integer.class, id).isEmpty();
+    }
+
+    // Verificar si la pelicula tiene funciones
+    public boolean tieneFunciones(int id) {
+        String sql = """
+            SELECT COUNT(*) FROM funciones
+            WHERE id_pelicula = ?
+            """;
+
+        Integer cantidad = jdbc.queryForObject(
+                sql, Integer.class, id
+        );
+
+        return cantidad != null && cantidad > 0;
+    }
 }

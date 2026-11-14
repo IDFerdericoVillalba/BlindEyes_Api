@@ -113,4 +113,18 @@ public class FuncionRepository {
 
         return jdbc.update(sql, cantidad, id, cantidad);
     }
+
+    // Verificar si la funcion tiene compras registradas
+    public boolean tieneCompras(int id) {
+        String sql = """
+            SELECT COUNT(*) FROM compras
+            WHERE id_funcion = ?
+            """;
+
+        Integer cantidad = jdbc.queryForObject(
+                sql, Integer.class, id
+        );
+
+        return cantidad != null && cantidad > 0;
+    }
 }
