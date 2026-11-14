@@ -63,6 +63,13 @@ public class CompraController {
     public ResponseEntity<Compra> registrar(
             @RequestBody CompraRequest request) {
 
+        if (request == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Debes enviar los datos de la compra"
+            );
+        }
+
         Compra compra = service.registrar(
                 request.idFuncion(),
                 request.nombreCliente(),
