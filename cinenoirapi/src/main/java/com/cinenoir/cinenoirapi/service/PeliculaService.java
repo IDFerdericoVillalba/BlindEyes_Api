@@ -61,6 +61,23 @@ public class PeliculaService {
                     "Uno de los campos supera la longitud permitida"
             );
         }
+        // Validar que la duracion sea un numero positivo
+        try {
+            int minutos = Integer.parseInt(
+                    pelicula.duracion()
+            );
+
+            if (minutos <= 0) {
+                throw new NumberFormatException();
+            }
+
+        } catch (NumberFormatException ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "La duracion debe ser un numero de minutos mayor que cero"
+            );
+        }
+
     }
 
     // Crear pelicula

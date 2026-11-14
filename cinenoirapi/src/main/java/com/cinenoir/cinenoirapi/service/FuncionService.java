@@ -99,12 +99,29 @@ public class FuncionService {
         return repository.guardar(funcion);
     }
 
-    // Actualizar funcion
+
+    // Actualizar funcion protegiendo las compras
+    @Transactional
     public void actualizar(int id, Funcion funcion) {
+
         validar(funcion);
-        buscarPorId(id);
+
+        repository.bloquearPorId(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "La funcion no existe"
+                ));
+
+        if (repository.tieneCompras(id)) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "No se puede modificar una funcion con compras registradas"
+            );
+        }
+
         repository.actualizar(id, funcion);
     }
+
 
     // Eliminar funcion con validacion
     @Transactional
